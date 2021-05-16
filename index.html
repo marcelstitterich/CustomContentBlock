@@ -1,11 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Title of the document</title>
+<title>Parse RSS Feeds</title>
 </head>
 
 <body>
-The content of the document......
+    %%[
+ 
+    Var @xml, @titles, @title, @descs, @desc, @links, @link, @cnt, @images, @image, @imgcnt 
+     
+        Set @xml = HTTPGet('https://www.telekom.com/service/rss/391798/feed.rss') 
+        Set @xml = Replace(@xml,'media:group','mediagroup') 
+        Set @xml = Replace(@xml,'media:content','mediacontent') 
+     
+        Set @titles = BuildRowsetFromXML(@xml,'//item/title',1) 
+        Set @descs  = BuildRowsetFromXML(@xml,'//item/description',1) 
+        Set @links  = BuildRowsetFromXML(@xml,'//item/link',1) 
+        Set @images = BuildRowsetFromXML(@xml,'//item/mediagroup/mediacontent/@url',1) 
+     
+        If RowCount(@titles) > 5 
+            THEN 
+                SET @rows = 5 
+            ELSE 
+                SET @rows = RowCount(@titles) 
+        ENDIF 
+     
+        Set @imgcnt = 2 
+        IF @rows >= 1 
+            THEN for @cnt = 1 to @rows 
+        do 
+            Set @title = Field(Row(@titles,@cnt),'Value') 
+            Set @desc = Field(Row(@descs,@cnt), 'Value') 
+            Set @link = Field(Row(@links,@cnt), 'Value') 
+            Set @image = Field(Row(@images,@imgcnt), 'Value') 
+            Set @imgcnt = Add(@imgcnt,5) 
+     
+    ]%%
+     
+    <div style="border: 1px solid #444; background-color: #F7F7F7; margin: 0.76em 0; padding: 0.76em;">
+      <h1 style="font: bold normal 1.0em Arial, Helvetica, sans-serif;">%%=v(@title)=%%</h1>
+        %%=v(@desc)=%%<br>
+        <a href="%%=RedirectTo(@link)=%%"">Lesen Sie hier mehr.</a><br>
+        <img alt="%%=v(@title)=%%" src="%%=v(@image)=%%">
+    </div> 
+     
+    %%[ 
+     
+        NEXT @cnt 
+        ENDIF 
+     
+    ]%%    
 </body>
 
 </html>
