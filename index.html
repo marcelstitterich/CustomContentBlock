@@ -5,51 +5,53 @@
 </head>
 
 <body>
-    %%[
- 
-    Var @xml, @titles, @title, @descs, @desc, @links, @link, @cnt, @images, @image, @imgcnt 
-     
-        Set @xml = HTTPGet('https://www.telekom.com/service/rss/391798/feed.rss') 
-        Set @xml = Replace(@xml,'media:group','mediagroup') 
-        Set @xml = Replace(@xml,'media:content','mediacontent') 
-     
-        Set @titles = BuildRowsetFromXML(@xml,'//item/title',1) 
-        Set @descs  = BuildRowsetFromXML(@xml,'//item/description',1) 
-        Set @links  = BuildRowsetFromXML(@xml,'//item/link',1) 
-        Set @images = BuildRowsetFromXML(@xml,'//item/mediagroup/mediacontent/@url',1) 
-     
-        If RowCount(@titles) > 5 
-            THEN 
-                SET @rows = 5 
-            ELSE 
-                SET @rows = RowCount(@titles) 
-        ENDIF 
-     
-        Set @imgcnt = 2 
-        IF @rows >= 1 
-            THEN for @cnt = 1 to @rows 
-        do 
-            Set @title = Field(Row(@titles,@cnt),'Value') 
-            Set @desc = Field(Row(@descs,@cnt), 'Value') 
-            Set @link = Field(Row(@links,@cnt), 'Value') 
-            Set @image = Field(Row(@images,@imgcnt), 'Value') 
-            Set @imgcnt = Add(@imgcnt,5) 
-     
-    ]%%
-     
-    <div style="border: 1px solid #444; background-color: #F7F7F7; margin: 0.76em 0; padding: 0.76em;">
-      <h1 style="font: bold normal 1.0em Arial, Helvetica, sans-serif;">%%=v(@title)=%%</h1>
-        %%=v(@desc)=%%<br>
-        <a href="%%=RedirectTo(@link)=%%"">Lesen Sie hier mehr.</a><br>
-        <img alt="%%=v(@title)=%%" src="%%=v(@image)=%%">
-    </div> 
-     
     %%[ 
-     
-        NEXT @cnt 
-        ENDIF 
-     
-    ]%%    
+ 
+Set @imgnr = 3 
+ 
+IF RowCount(@titles) >= 3 
+    THEN 
+        Set @artnr = 3 
+        Set @title = Field(Row(@titles,@artnr),'Value') 
+        Set @desc = Field(Row(@descs,@artnr), 'Value') 
+        Set @link = Field(Row(@links,@artnr), 'Value') 
+        Set @imgcnt = ADD(Multiply(Subtract(@artnr, 1), 5), @imgnr) 
+        Set @image = Field(Row(@images,@imgcnt), 'Value') 
+ 
+]%%
+ 
+<table border="0" cellpadding="0" cellspacing="0" style="border: 0; border-spacing: 0; margin: 0; width: 100%;">
+  <tr>
+    <td align="left">
+      <img alt="%%=v(@title)=%%" src="%%=v(@image)=%%" style="display: block; padding: 0px; text-align: center;  border: 0px;" width="270">
+    </td>
+    <td style="border: 0; border-collapse: collapse; border-spacing: 0; margin: 0; padding: 0px 0px 10px 15px;">
+      <p style="font-weight: 700; line-height: 140%;">
+        %%=v(@title)=%%</p>
+      <p style="font-family: 'TeleGrotesk Next', 'Arial', 'Helvetica', sans-serif; margin: 0;">
+        %%=v(@desc)=%%</p>
+      <table border="0" cellpadding="0" cellspacing="0" style="padding: 20px 0px 10px 0px" width="100%">
+        <tr>
+          <td align="right">
+            <table border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td bgcolor="#DF1275" class="innertd buttonblock" style=" border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; background-color: #DF1275;">
+                  <a alias="" class="buttonstyles" conversion="false" data-linkto="https://" href="%%=RedirectTo(@link)=%%" style=" font-size: 16px; font-family: Arial, helvetica, sans-serif; color: #FFFFFF; text-align: right; text-decoration: none; display: block; background-color: #DF1275; border: 1px solid #B00C5C; padding: 10px; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px;" target="_blank" title="">Lesen Sie hier mehr</a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <p>
+      </p>
+    </td>
+  </tr>
+</table>
+ 
+ 
+%%[ ENDIF ]%%
+    
 </body>
 
 </html>
