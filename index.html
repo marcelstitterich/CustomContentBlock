@@ -1,57 +1,127 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>Parse RSS Feeds</title>
-</head>
+	<head>
+		<title>Image Cropper Block</title>
+	</head>
+	<body>
+		<article class="slds-card">
+  <div class="slds-card__header slds-grid">
+    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+      <div class="slds-media__figure">
+        <span class="slds-icon_container slds-icon-standard-contact" title="description of icon when needed">
+          <svg class="slds-icon slds-icon_small" aria-hidden="true">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#contact" />
+          </svg>
+        </span>
+      </div>
+      <div class="slds-media__body">
+        <h2>
+          <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="[object Object]">
+            <span class="slds-text-heading_small">Image Cropper Block</span>
+          </a>
+        </h2>
+      </div>
+    </header>
+  </div>
+  <div class="slds-card__body slds-card__body_inner">
+  <div id="workspace">
+			<div class="slds-form-element">
+				<label class="slds-form-element__label" for="text-input-id-0">Image URL</label>
+				<div class="slds-form-element__control">
+					<input type="text" id="text-input-id-0" name="imageURL" class="slds-input" placeholder="https://miro.medium.com/max/2890/1*MDKDf6Cp24W2iejxrpZZBQ.png" />
+				</div>
+			</div>
+			<div class="slds-form-element" style="margin-top:5px;margin-bottom:10px;">
+				<div class="slds-form-element__control">
+					<button id="loadImage" class="slds-button slds-button_brand">Load Image</button>
+				</div>
+			</div>
+			<div class="img-container" id="img-container" style="margin-top:10px;margin-bottom:10px;" hidden=hidden>
+				<div class="slds-form-element__help" id="form-image-help-label">* You can zoom in and zoom out by scrolling</div>
+				<img id="image" src="" crossorigin="anonymous"/>
+			</div>
+			<fieldset class="slds-form-element">
+				<legend class="slds-form-element__legend slds-form-element__label">Crop Ratio</legend>
+				<div class="slds-form-element__control">
+				  <div class="slds-radio_button-group">
+					<span class="slds-button slds-radio_button">
+					  <input type="radio" name="aspectRatio" id="example-unique-id-122" value="NaN" checked />
+					  <label class="slds-radio_button__label" for="example-unique-id-122">
+						<span class="slds-radio_faux">Free</span>
+					  </label>
+					</span>
+					<span class="slds-button slds-radio_button">
+					  <input type="radio" name="aspectRatio" id="example-unique-id-123" value="1.77" />
+					  <label class="slds-radio_button__label" for="example-unique-id-123">
+						<span class="slds-radio_faux">16:9</span>
+					  </label>
+					</span>
+					<span class="slds-button slds-radio_button">
+					  <input type="radio" name="aspectRatio" id="example-unique-id-124" value="1.33" />
+					  <label class="slds-radio_button__label" for="example-unique-id-124">
+						<span class="slds-radio_faux">4:3</span>
+					  </label>
+					</span>
+					<span class="slds-button slds-radio_button">
+					  <input type="radio" name="aspectRatio" id="example-unique-id-125" value="1" />
+					  <label class="slds-radio_button__label" for="example-unique-id-125">
+						<span class="slds-radio_faux">1:1</span>
+					  </label>
+					</span>
+					<span class="slds-button slds-radio_button">
+					  <input type="radio" name="aspectRatio" id="example-unique-id-126" value="0.66" />
+					  <label class="slds-radio_button__label" for="example-unique-id-126">
+						<span class="slds-radio_faux">2:3</span>
+					  </label>
+					</span>
+				  </div>
+				</div>
+			</fieldset>
+			<fieldset class="slds-form-element slds-form-element_compound">
+				<legend class="slds-form-element__legend slds-form-element__label">Image Size</legend>
+				<div class="slds-form-element__control">
+				  <div class="slds-form-element__row">
+					<div class="slds-size_1-of-2">
+					  <div class="slds-form-element">
+						<label class="slds-form-element__label" for="input-01">Width</label>
+						<div class="slds-form-element__control">
+						  <input type="number" id="input-01" name="imageWidth" class="slds-input" value="0" />
+						</div>
+					  </div>
+					</div>
+					<div class="slds-size_1-of-2">
+					  <div class="slds-form-element">
+						<label class="slds-form-element__label" for="input-02">Height</label>
+						<div class="slds-form-element__control">
+						  <input type="number" id="input-02" name="imageHeight" class="slds-input" value="0" />
+						</div>
+					  </div>
+					</div>
+				  </div>
+				</div>
+				<div class="slds-form-element__control">
+					<div class="slds-checkbox">
+					  <input type="checkbox" name="options" id="checkbox-fillwidth" value="checkbox-fillwidth" />
+					  <label class="slds-checkbox__label" for="checkbox-fillwidth">
+						<span class="slds-checkbox_faux"></span>
+						<span class="slds-form-element__label">Scale to Fit</span>
+					  </label>
 
-<body>
-    %%[ 
- 
-Set @imgnr = 3 
- 
-IF RowCount(@titles) >= 3 
-    THEN 
-        Set @artnr = 3 
-        Set @title = Field(Row(@titles,@artnr),'Value') 
-        Set @desc = Field(Row(@descs,@artnr), 'Value') 
-        Set @link = Field(Row(@links,@artnr), 'Value') 
-        Set @imgcnt = ADD(Multiply(Subtract(@artnr, 1), 5), @imgnr) 
-        Set @image = Field(Row(@images,@imgcnt), 'Value') 
- 
-]%%
- 
-<table border="0" cellpadding="0" cellspacing="0" style="border: 0; border-spacing: 0; margin: 0; width: 100%;">
-  <tr>
-    <td align="left">
-      <img alt="%%=v(@title)=%%" src="%%=v(@image)=%%" style="display: block; padding: 0px; text-align: center;  border: 0px;" width="270">
-    </td>
-    <td style="border: 0; border-collapse: collapse; border-spacing: 0; margin: 0; padding: 0px 0px 10px 15px;">
-      <p style="font-weight: 700; line-height: 140%;">
-        %%=v(@title)=%%</p>
-      <p style="font-family: 'TeleGrotesk Next', 'Arial', 'Helvetica', sans-serif; margin: 0;">
-        %%=v(@desc)=%%</p>
-      <table border="0" cellpadding="0" cellspacing="0" style="padding: 20px 0px 10px 0px" width="100%">
-        <tr>
-          <td align="right">
-            <table border="0" cellpadding="0" cellspacing="0">
-              <tr>
-                <td bgcolor="#DF1275" class="innertd buttonblock" style=" border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; background-color: #DF1275;">
-                  <a alias="" class="buttonstyles" conversion="false" data-linkto="https://" href="%%=RedirectTo(@link)=%%" style=" font-size: 16px; font-family: Arial, helvetica, sans-serif; color: #FFFFFF; text-align: right; text-decoration: none; display: block; background-color: #DF1275; border: 1px solid #B00C5C; padding: 10px; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px;" target="_blank" title="">Lesen Sie hier mehr</a>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table>
-      <p>
-      </p>
-    </td>
-  </tr>
-</table>
- 
- 
-%%[ ENDIF ]%%
-    
-</body>
-
+					  <input type="checkbox" name="options" id="checkbox-center" value="checkbox-center" />
+					  <label class="slds-checkbox__label" for="checkbox-center">
+						<span class="slds-checkbox_faux"></span>
+						<span class="slds-form-element__label">Align Center</span>
+					  </label>
+					</div>
+				  </div>
+			</fieldset>
+			<input type="hidden" id="hidden-input-id-0" name="imageX" />
+			<input type="hidden" id="hidden-input-id-1" name="imageY" />
+		</div>
+  </div>
+  <footer class="slds-card__footer">Salesforce Marketing Cloud Demo</footer>
+</article>
+		
+		<script src="./main.js"></script>
+	</body>
 </html>
